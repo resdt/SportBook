@@ -22,6 +22,20 @@ VALUES ($1, $2, $3);
     await conn.execute_query(query, credentials.login, credentials.hashed_password, credentials.user_type)
 
 
+@router.get("/get_items")
+async def get_items():
+    query = """
+SELECT *
+FROM items;
+"""
+    result = await conn.execute_query(query)
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Предметы не найдены")
+
+    return result
+
+
 class AddInventoryItem(BaseModel):
     item_id: int
     quantity: int
@@ -161,6 +175,33 @@ WHERE id = $2;
     return {"message": f"Количество обновлено до {data.new_quantity}"}
 
 
+@router.get("/get_users")
+async def get_usernames():
+    query = """
+SELECT id, login
+FROM users;
+    """
+    result = await conn.execute_query(query)
+    return result
+
+
+@router.get("/get_user_inventory")
+async def get_user_inventory():
+    query = """
+SELECT ui.id AS id,
+       i.id AS item_id,
+       u.login AS login,
+       i.name AS item_name,
+       ui.quantity,
+       ui.status
+FROM user_inventory AS ui
+LEFT JOIN users AS u ON ui.user_id = u.id
+LEFT JOIN items AS i ON ui.item_id = i.id;
+    """
+    result = await conn.execute_query(query)
+    return result
+
+
 class AssignInventory(BaseModel):
     inventory_id: int
     user_id: int
@@ -218,6 +259,25 @@ DO UPDATE SET quantity = user_inventory.quantity + $3;
     )
 
     return {"message": "Инвентарь успешно закреплен за пользователем"}
+
+
+@router.get("/requests/get")
+async def get_requests():
+    query = """
+SELECT r.id,
+       u.login,
+       i.name AS item_name,
+       r.request_type,
+       r.quantity,
+       r.status,
+       r.created_at,
+       r.updated_at
+FROM requests AS r
+LEFT JOIN users AS u ON r.user_id = u.id
+LEFT JOIN items AS i ON r.item_id = i.id;
+    """
+    result = await conn.execute_query(query)
+    return result
 
 
 async def process_get_request(request):
@@ -353,7 +413,6 @@ async def process_request(data: ProcessRequest):
     # Проверяем валидность отклика
     if data.response not in ["одобрено", "отклонено"]:
         raise HTTPException(status_code=400, detail="Недопустимый отклик")
-
     # Получаем информацию о заявке
     select_query = """
 SELECT user_id, item_id, request_type, quantity, status
@@ -401,3 +460,14 @@ WHERE id = $1;
     await conn.execute_query(update_query, data.request_id)
 
     return {"message": "Заявка успешно обработана"}
+
+
+@router.get("/supply")
+async def get_supply():
+    query = """
+SELECT *
+FROM provider_items AS pi
+LEFT JOIN items AS i ON pi.item_id = i.id;
+    """
+    result = await conn.execute_query(query)
+    return result

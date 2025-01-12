@@ -54,12 +54,13 @@ VALUES ($1, $2, $3, $4, 'на рассмотрении');
 async def get_requests(user_id: int):
     query = """
 SELECT *
-FROM requests
+FROM requests AS r
+LEFT JOIN items AS i ON r.item_id = i.id
 WHERE user_id = $1;
     """
     result = await conn.execute_query(query, user_id)
 
     if not result:
-        raise HTTPException(status_code=404, detail="Заявки для данного пользователя не найдены")
+        return []
 
     return result
