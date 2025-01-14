@@ -1,9 +1,10 @@
+import os
 import re
 import asyncpg
 from fastapi import HTTPException
 
 
-DB_LINK = "postgresql://sportbookdb_owner:D0ygw5tEkOZL@ep-divine-brook-a5aikj8k.us-east-2.aws.neon.tech/sportbookdb?sslmode=require"
+DB_LINK = os.getenv("DB_LINK")
 PARAMETER_LIST = re.split(r"[:/\@\?]+", DB_LINK)
 DB_PARAMS = {"user": PARAMETER_LIST[1],
              "password": PARAMETER_LIST[2],

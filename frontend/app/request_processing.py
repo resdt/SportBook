@@ -10,7 +10,7 @@ import utils.data_processing as data_proc
 def load_data():
     result = {}
 
-    df_requests = pd.DataFrame(data_proc.load_api_data(url=f"admins/requests/get", method="get"))
+    df_requests = pd.DataFrame(data_proc.load_api_data(url="admins/requests/get", method="get"))
     df_requests["created_at"] = pd.to_datetime(df_requests["created_at"], format="ISO8601")
     df_requests["updated_at"] = pd.to_datetime(df_requests["updated_at"], format="ISO8601")
     result["df_requests"] = df_requests
@@ -77,7 +77,7 @@ def process_requests(src_df_requests):
         if action is not None:
             try:
                 json = {"request_id": request_id, "response": action}
-                data_proc.load_api_data(url="admins/requests/process", json=json)
+                data_proc.load_api_data(url="admins/requests/process", method="post", json=json)
                 st.success("Заявка успешно обработана")
                 load_data.clear()
                 time.sleep(1)

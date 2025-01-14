@@ -20,7 +20,7 @@ def load_data(user_id):
         df_user_requests = pd.DataFrame()
     result["df_user_requests"] = df_user_requests
 
-    df_inventory = pd.DataFrame(data_proc.load_api_data(url=f"app/inventory", method="get"))
+    df_inventory = pd.DataFrame(data_proc.load_api_data(url="app/inventory", method="get"))
     result["df_inventory"] = df_inventory
 
     return result
@@ -73,7 +73,7 @@ def create_request(df_src_inventory, df_src_user_inventory):
                 try:
                     user_id = st.session_state.user_id
                     json = {"action": action, "item_id": item_id, "quantity": quantity}
-                    data_proc.load_api_data(url=f"users/{user_id}/requests/make", json=json)
+                    data_proc.load_api_data(url=f"users/{user_id}/requests/make", method="post", json=json)
                     load_data.clear()
                     st.success("Заявка успешно создана")
                     time.sleep(1)

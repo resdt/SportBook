@@ -66,7 +66,7 @@ def extend_inventory(src_df):
         if st.button("Добавить", type="primary"):
             try:
                 json = {"item_id": item_id, "quantity": quantity}
-                data_proc.load_api_data(url="admins/inventory/extend", json=json)
+                data_proc.load_api_data(url="admins/inventory/extend", method="post", json=json)
                 st.success("Предмет успешно добавлен в инвентарь")
                 load_data.clear()
                 time.sleep(1)
@@ -96,7 +96,7 @@ def edit_inventory(src_df):
         if st.button("Изменить статус", type="primary"):
             try:
                 json = {"inventory_id": inventory_id, "new_quantity": new_quantity, "new_status": new_status}
-                data_proc.load_api_data(url="admins/inventory/edit_status", json=json, method="put")
+                data_proc.load_api_data(url="admins/inventory/edit_status", method="put", json=json)
                 st.success("Статус предметов успешно изменен")
                 load_data.clear()
                 time.sleep(1)
@@ -107,7 +107,7 @@ def edit_inventory(src_df):
         if st.button("Изменить количество", type="primary"):
             try:
                 json = {"inventory_id": inventory_id, "new_quantity": new_quantity}
-                data_proc.load_api_data(url="admins/inventory/edit_quantity", json=json, method="put")
+                data_proc.load_api_data(url="admins/inventory/edit_quantity", method="put", json=json)
                 st.success("Количество предметов успешно изменено")
                 load_data.clear()
                 time.sleep(1)
@@ -140,7 +140,7 @@ def assign_items(src_df_inventory, src_df_usernames):
         if st.button("Назначить владельца", type="primary"):
             try:
                 json = {"inventory_id": inventory_id, "quantity": new_quantity, "user_id": user_id}
-                data_proc.load_api_data(url="admins/inventory/assign", json=json)
+                data_proc.load_api_data(url="admins/inventory/assign", method="post", json=json)
                 st.success("Владелец успешно назначен")
                 load_data.clear()
                 time.sleep(1)

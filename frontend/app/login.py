@@ -1,13 +1,11 @@
 import streamlit as st
 import hashlib
-import requests
 import time
 
-import envars
 import utils.data_processing as data_proc
 
 
-def change_username_input_state():
+def change_input_state():
     if "login_changed" not in st.session_state:
         st.session_state.login_changed = True
     else:
@@ -16,15 +14,14 @@ def change_username_input_state():
 
 @st.dialog("Регистрация")
 def sign_up():
-    login = st.text_input("Введите имя пользователя", on_change=change_username_input_state)
+    login = st.text_input("Введите имя пользователя", on_change=change_input_state)
     if "valid_login" not in st.session_state:
         st.session_state.valid_login = False
     valid_login = st.session_state.valid_login
 
     if login and st.session_state.login_changed:
-        change_username_input_state()
-        response = requests.post(f"{envars.API_BASE_URL}/app/check_username?login={login}")
-        data = response.json()
+        change_input_state()
+        data = data_proc.load_api_data(url=f"app/check_username?login={login}", method="post")
         valid_login = data["validity"]
         st.session_state.valid_login = valid_login
     if not valid_login and login:
@@ -39,7 +36,7 @@ def sign_up():
                 valid_login]):
             try:
                 json = {"login": login, "hashed_password": hashed_password}
-                data_proc.load_api_data(url="app/sign_up", json=json)
+                data_proc.load_api_data(url="app/sign_up", method="post", json=json)
                 st.success("Вы успешно зарегистрировались")
                 time.sleep(1)
                 st.rerun()
@@ -58,7 +55,7 @@ def display():
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
         if st.form_submit_button("Войти"):
             json = {"login": username, "hashed_password": hashed_password}
-            data = data_proc.load_api_data(url="app/login", json=json)
+            data = data_proc.load_api_data(url="app/login", method="post", json=json)
 
             if not data["success"]:
                 st.error("Неправильный логин или пароль")

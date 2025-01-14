@@ -18,7 +18,7 @@ def main():
                                             st.Page("app/inventory_management.py", title="Управление инвентарем", icon=":material/inventory:"),
                                             st.Page("app/request_processing.py", title="Заявки", icon=":material/request_quote:"),
                                             st.Page("app/supply.py", title="Закупки", icon=":material/forklift:")],
-                        "Панель управления": [st.Page("app/user_inventory.py", title="Мой инвентарь", icon=":material/inventory_2:")]})
+                          "Панель управления": [st.Page("app/user_inventory.py", title="Мой инвентарь", icon=":material/inventory_2:")]})
         elif user_type == "user":
             pages.update({"Панель управления": [st.Page("app/user_inventory.py", title="Мой инвентарь", icon=":material/inventory_2:")]})
     display_pages = st.navigation(pages)
