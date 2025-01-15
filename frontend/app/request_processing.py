@@ -48,12 +48,12 @@ def show_filter_block(src_df):
 def process_requests(src_df_requests):
     with st.expander("Обработка заявок"):
         df_requests = src_df_requests.copy()
-        df_requests["quantity"] = df_requests["quantity"].astype(str)
         df_requests = df_requests[df_requests["status"] == "на рассмотрении"]
 
         if df_requests.empty:
             return
 
+        df_requests["quantity"] = df_requests["quantity"].astype(str)
         df_requests["options"] = (df_requests["login"] + " | "
                                   + df_requests["item_name"] + " | "
                                   + df_requests["request_type"] + " | "
@@ -70,10 +70,13 @@ def process_requests(src_df_requests):
         request_id = int(request_id)
 
         action = None
-        if st.button("Одобрить"):
-            action = "одобрено"
-        if st.button("Отклонить"):
-            action = "отклонено"
+        col1, col2, *_ = st.columns(5)
+        with col1:
+            if st.button("Отклонить"):
+                action = "отклонено"
+        with col2:
+            if st.button("Одобрить"):
+                action = "одобрено"
         if action is not None:
             try:
                 json = {"request_id": request_id, "response": action}
