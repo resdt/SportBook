@@ -3,12 +3,10 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    develop:
-      watch:
-        - action: rebuild
-          path: ./frontend
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app
     env_file:
       - .env
     depends_on:
@@ -18,11 +16,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    develop:
-      watch:
-        - action: rebuild
-          path: ./backend
     env_file:
       - .env
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend:/app
