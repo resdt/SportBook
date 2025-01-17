@@ -6,13 +6,14 @@ import streamlit as st
 import utils.data_processing as data_proc
 
 
-@st.cache_data(ttl=10 * 60 * 60, show_spinner=False)
+@st.cache_data(ttl=10 * 60, show_spinner=False)
 def load_data():
     result = {}
 
     df_requests = pd.DataFrame(data_proc.load_api_data(url="admins/requests/get", method="get"))
-    df_requests["created_at"] = pd.to_datetime(df_requests["created_at"], format="ISO8601")
-    df_requests["updated_at"] = pd.to_datetime(df_requests["updated_at"], format="ISO8601")
+    if not df_requests.empty:
+        df_requests["created_at"] = pd.to_datetime(df_requests["created_at"], format="ISO8601")
+        df_requests["updated_at"] = pd.to_datetime(df_requests["updated_at"], format="ISO8601")
     result["df_requests"] = df_requests
 
     return result
@@ -40,7 +41,7 @@ def show_filter_block(src_df):
         filter_dict[f_key] = selected_filter
 
     df = df.sort_values(by=["login", "status"]).reset_index(drop=True)
-    df.index +=1
+    df.index += 1
     st.dataframe(df, use_container_width=True)
 
 
@@ -95,9 +96,8 @@ def display():
     data_dict = load_data()
 
     df_requests = data_dict["df_requests"]
-    show_filter_block(df_requests.drop(columns="id"))
-
     if not df_requests.empty:
+        show_filter_block(df_requests.drop(columns="id"))
         process_requests(df_requests)
 
 

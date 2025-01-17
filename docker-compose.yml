@@ -7,18 +7,36 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-    env_file:
-      - .env
     depends_on:
       - backend
+    environment:
+      API_BASE_URL: http://backend:8000/api/v1
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file:
-      - .env
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
+    depends_on:
+      - db
+    environment:
+      DB_LINK: postgresql://sportbookdb_owner:gbou962@db/sportbookdb
+
+  db:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: sportbookdb_owner
+      POSTGRES_PASSWORD: gbou962
+      POSTGRES_DB: sportbookdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+      - ./data:/data
+
+volumes:
+  postgres_data:
