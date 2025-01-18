@@ -2,16 +2,16 @@
 FROM python:3.12-slim
 
 # Set working directory
-WORKDIR /app
+WORKDIR /app/frontend
 
 # Copy application code
-COPY . .
+COPY . /app/frontend
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the port the app will use
-EXPOSE 3000
+EXPOSE 8501
 
 # Define the command to run the application
-CMD ["streamlit", "run", "main.py", "--server.address", "0.0.0.0", "--server.port", "3000"]
+CMD ["streamlit", "run", "main.py", "--server.address", "0.0.0.0", "--server.port", "8501"]
