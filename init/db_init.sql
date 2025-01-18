@@ -1,16 +1,17 @@
 -- Drop tables
-DROP TABLE IF EXISTS requests CASCADE;
-DROP TABLE IF EXISTS provider_items CASCADE;
-DROP TABLE IF EXISTS user_inventory CASCADE;
-DROP TABLE IF EXISTS inventory CASCADE;
-DROP TABLE IF EXISTS items CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS requests,
+                     provider_items,
+                     user_inventory,
+                     inventory,
+                     items,
+                     users
+CASCADE;
 
 -- Drop ENUM types
-DROP TYPE IF EXISTS user_type_enum;
-DROP TYPE IF EXISTS inventory_status_enum;
-DROP TYPE IF EXISTS request_type_enum;
-DROP TYPE IF EXISTS request_status_enum;
+DROP TYPE IF EXISTS user_type_enum,
+                    inventory_status_enum,
+                    request_type_enum,
+                    request_status_enum;
 
 -- Create ENUM types
 CREATE TYPE user_type_enum AS ENUM ('admin', 'user');

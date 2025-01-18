@@ -34,9 +34,5 @@ services:
       POSTGRES_PASSWORD: gbou962
       POSTGRES_DB: sportbookdb
     volumes:
-      - postgres_data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d
       - ./data:/data
-
-volumes:
-  postgres_data:
