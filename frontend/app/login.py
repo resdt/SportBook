@@ -51,14 +51,13 @@ def display():
             json = {"login": username, "hashed_password": hashed_password}
             data = data_proc.load_api_data(url="app/login", method="post", json=json)
 
-            if not data["success"]:
+            if data["success"]:
+                st.session_state.user_type = data["user_type"]
+                st.session_state.user_id = data["user_id"]
+                st.session_state.is_logged_in = True
+                st.rerun()
+            else:
                 st.error("Неправильный логин или пароль")
-                st.stop()
-
-            st.session_state.user_type = data["user_type"]
-            st.session_state.user_id = data["user_id"]
-            st.session_state.is_logged_in = True
-            st.rerun()
 
         if st.form_submit_button("Зарегистрироваться", type="primary"):
             st.session_state.valid_login = False
